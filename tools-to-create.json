@@ -1,0 +1,80 @@
+[
+  {
+    "type": "webhook",
+    "webhook": {
+      "name": "search_villas",
+      "description": "Search available villas based on location, dates, guests, and budget",
+      "url": "https://stayvista-api.kamatanuj.workers.dev/api/tools/search-villas",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "location": "{{location}}",
+        "guests": "{{guests}}",
+        "check_in": "{{check_in}}",
+        "check_out": "{{check_out}}",
+        "max_budget": "{{max_budget}}"
+      }
+    }
+  },
+  {
+    "type": "webhook",
+    "webhook": {
+      "name": "check_availability",
+      "description": "Check real-time availability for specific villa and dates",
+      "url": "https://stayvista-api.kamatanuj.workers.dev/api/tools/check-availability",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "villa_id": "{{villa_id}}",
+        "check_in": "{{check_in}}",
+        "check_out": "{{check_out}}",
+        "guests": "{{guests}}"
+      }
+    }
+  },
+  {
+    "type": "webhook",
+    "webhook": {
+      "name": "get_pricing",
+      "description": "Calculate pricing with all applicable discounts and promotions",
+      "url": "https://stayvista-api.kamatanuj.workers.dev/api/tools/get-pricing",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "villa_id": "{{villa_id}}",
+        "check_in": "{{check_in}}",
+        "check_out": "{{check_out}}",
+        "guests": "{{guests}}",
+        "promo_code": "{{promo_code}}"
+      }
+    }
+  },
+  {
+    "type": "webhook",
+    "webhook": {
+      "name": "create_booking",
+      "description": "Create a new villa booking after explicit guest confirmation",
+      "url": "https://stayvista-api.kamatanuj.workers.dev/api/webhooks/create-booking",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "
+      },
+      "body": {
+        "villa_id": "{{villa_id}}",
+        "guest_name": "{{guest_name}}",
+        "email": "{{email}}",
+        "phone": "{{phone}}",
+        "check_in": "{{check_in}}",
+        "check_out": "{{check_out}}",
+        "guests": "{{guests}}"
+      }
+    }
+  }
+]
