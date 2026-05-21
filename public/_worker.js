@@ -7,7 +7,6 @@ import { Router } from './worker-router.js';
 const router = new Router();
 
 // Mock villa database (StayVista has 1000+ villas, using subset for demo)
-// Mock villa database (20 properties for realistic voice demos)
 const VILLAS = [
   {
     id: "villa_001",
@@ -62,252 +61,102 @@ const VILLAS = [
     bedrooms: 3,
     bathrooms: 3,
     max_guests: 6,
-    price_per_night: 22000,
-    price_category: "Premium",
-    villa_type: "Hill Station",
-    amenities: ["Valley View", "Fireplace", "Garden", "AC", "WiFi", "Parking"],
+    price_per_night: 18000,
+    price_category: "Standard",
+    villa_type: "Hill",
+    amenities: ["Valley View", "Bonfire", "BBQ", "AC", "WiFi"],
     pet_friendly: true,
-    description: "Serene hilltop retreat with panoramic valley views and fireplace"
+    description: "Scenic hilltop villa with panoramic valley views"
   },
   {
     id: "villa_005",
-    name: "Palm Grove Retreat",
-    location: "Alibaug",
-    region: "Maharashtra Coast",
+    name: "Valley Retreat",
+    location: "Lonavala",
+    region: "Western Ghats",
     bedrooms: 4,
     bathrooms: 4,
     max_guests: 8,
-    price_per_night: 28000,
-    price_category: "Luxury",
-    villa_type: "Beachfront",
-    amenities: ["Private Pool", "Beach Access", "Coconut Garden", "AC", "WiFi"],
+    price_per_night: 25000,
+    price_category: "Premium",
+    villa_type: "Hill",
+    amenities: ["Private Pool", "Valley View", "Game Room", "AC", "WiFi", "Parking"],
     pet_friendly: false,
-    description: "Tropical beachfront surrounded by swaying coconut palms"
+    description: "Premium valley retreat with private pool and game room"
   },
   {
     id: "villa_006",
-    name: "Mountain Mist",
-    location: "Mahabaleshwar",
-    region: "Western Ghats",
-    bedrooms: 3,
-    bathrooms: 3,
-    max_guests: 6,
-    price_per_night: 18500,
-    price_category: "Premium",
-    villa_type: "Hill Station",
-    amenities: ["Valley View", "Bonfire", "Garden", "AC", "WiFi"],
-    pet_friendly: true,
-    description: "Cozy hillside villa with misty valley views and bonfire nights"
-  },
-  {
-    id: "villa_007",
-    name: "Royal Heritage",
-    location: "Udaipur",
-    region: "Rajasthan",
-    bedrooms: 6,
-    bathrooms: 6,
-    max_guests: 12,
-    price_per_night: 55000,
-    price_category: "Ultra-Luxury",
-    villa_type: "Heritage",
-    amenities: ["Lake View", "Private Pool", "Butler Service", "AC", "WiFi", "Parking"],
-    pet_friendly: false,
-    description: "Majestic heritage palace with Lake Pichola views and royal service"
-  },
-  {
-    id: "villa_008",
-    name: "Villa Serenity",
-    location: "Goa",
-    region: "North Goa",
-    bedrooms: 3,
-    bathrooms: 3,
-    max_guests: 6,
-    price_per_night: 25000,
-    price_category: "Luxury",
-    villa_type: "Pool",
-    amenities: ["Private Pool", "Jacuzzi", "Garden", "AC", "WiFi", "Parking"],
-    pet_friendly: true,
-    description: "Modern pool villa with jacuzzi and lush tropical garden"
-  },
-  {
-    id: "villa_009",
-    name: "The Blue Lagoon",
-    location: "Goa",
-    region: "South Goa",
-    bedrooms: 2,
-    bathrooms: 2,
-    max_guests: 4,
-    price_per_night: 18000,
-    price_category: "Premium",
-    villa_type: "Beachfront",
-    amenities: ["Beach Access", "Rooftop Deck", "AC", "WiFi"],
-    pet_friendly: false,
-    description: "Intimate beach cottage with private beach access and rooftop sunset deck"
-  },
-  {
-    id: "villa_010",
-    name: "Forest Edge",
-    location: "Coorg",
-    region: "Karnataka",
-    bedrooms: 4,
-    bathrooms: 4,
-    max_guests: 8,
-    price_per_night: 32000,
-    price_category: "Luxury",
-    villa_type: "Nature Resort",
-    amenities: ["Coffee Plantation", "Private Pool", "Nature Trails", "AC", "WiFi", "Parking"],
-    pet_friendly: true,
-    description: "Estate nestled in a working coffee plantation with nature trails"
-  },
-  {
-    id: "villa_011",
-    name: "White House Villa",
+    name: "Coastal Escape",
     location: "Alibaug",
-    region: "Maharashtra Coast",
-    bedrooms: 5,
-    bathrooms: 5,
-    max_guests: 10,
-    price_per_night: 42000,
-    price_category: "Ultra-Luxury",
-    villa_type: "Beachfront",
-    amenities: ["Private Pool", "Beach Access", "Home Theater", "AC", "WiFi", "Parking"],
-    pet_friendly: false,
-    description: "Elegant white Mediterranean-style villa right on the beach"
-  },
-  {
-    id: "villa_012",
-    name: "The Glass House",
-    location: "Mahabaleshwar",
-    region: "Western Ghats",
-    bedrooms: 3,
-    bathrooms: 3,
-    max_guests: 6,
-    price_per_night: 26000,
-    price_category: "Luxury",
-    villa_type: "Hill Station",
-    amenities: ["Glass Walls", "Valley View", "Fireplace", "AC", "WiFi"],
-    pet_friendly: true,
-    description: "Architectural marvel with floor-to-ceiling glass walls and valley panoramas"
-  },
-  {
-    id: "villa_013",
-    name: "Coconut Cove",
-    location: "Goa",
-    region: "North Goa",
-    bedrooms: 4,
-    bathrooms: 4,
-    max_guests: 8,
-    price_per_night: 30000,
-    price_category: "Luxury",
-    villa_type: "Beachfront",
-    amenities: ["Private Pool", "Beach Access", "Coconut Grove", "AC", "WiFi", "Parking"],
-    pet_friendly: true,
-    description: "Secluded beach villa surrounded by its own coconut grove"
-  },
-  {
-    id: "villa_014",
-    name: "River Song",
-    location: "Rishikesh",
-    region: "Uttarakhand",
+    region: "Konkan Coast",
     bedrooms: 3,
     bathrooms: 3,
     max_guests: 6,
     price_per_night: 15000,
-    price_category: "Premium",
-    villa_type: "Riverfront",
-    amenities: ["River View", "Yoga Deck", "Bonfire", "AC", "WiFi"],
+    price_category: "Standard",
+    villa_type: "Beachfront",
+    amenities: ["Beach Access", "Garden", "BBQ", "AC", "WiFi"],
     pet_friendly: true,
-    description: "Tranquil riverside retreat with yoga deck and Ganga views"
+    description: "Affordable coastal getaway just 2 hours from Mumbai"
   },
   {
-    id: "villa_015",
-    name: "Desert Rose",
-    location: "Jaisalmer",
+    id: "villa_007",
+    name: "Mountain Mist",
+    location: "Manali",
+    region: "Himachal Pradesh",
+    bedrooms: 4,
+    bathrooms: 4,
+    max_guests: 8,
+    price_per_night: 22000,
+    price_category: "Premium",
+    villa_type: "Hill",
+    amenities: ["Mountain View", "Fireplace", "Ski Storage", "AC", "WiFi", "Parking"],
+    pet_friendly: false,
+    description: "Premium mountain villa with stunning Himalayan views"
+  },
+  {
+    id: "villa_008",
+    name: "Coffee Estate",
+    location: "Coorg",
+    region: "Karnataka",
+    bedrooms: 3,
+    bathrooms: 3,
+    max_guests: 6,
+    price_per_night: 12000,
+    price_category: "Budget",
+    villa_type: "Heritage",
+    amenities: ["Coffee Plantation", "Nature Walk", "AC", "WiFi"],
+    pet_friendly: true,
+    description: "Heritage villa amidst coffee plantations"
+  },
+  {
+    id: "villa_009",
+    name: "Palace Suites",
+    location: "Jaipur",
+    region: "Rajasthan",
+    bedrooms: 5,
+    bathrooms: 5,
+    max_guests: 10,
+    price_per_night: 55000,
+    price_category: "Ultra-Luxury",
+    villa_type: "Heritage",
+    amenities: ["Heritage Architecture", "Courtyard", "Pool", "AC", "WiFi", "Parking"],
+    pet_friendly: false,
+    description: "Royal heritage palace with authentic Rajasthani architecture"
+  },
+  {
+    id: "villa_010",
+    name: "Lakeview Villa",
+    location: "Udaipur",
     region: "Rajasthan",
     bedrooms: 4,
     bathrooms: 4,
     max_guests: 8,
-    price_per_night: 28000,
+    price_per_night: 42000,
     price_category: "Luxury",
     villa_type: "Heritage",
-    amenities: ["Desert View", "Courtyard", "Camel Safari", "AC", "WiFi"],
-    pet_friendly: true,
-    description: "Traditional haveli in the Thar desert with stunning sunset dunes views"
-  },
-  {
-    id: "villa_016",
-    name: "Emerald Valley",
-    location: "Munnar",
-    region: "Kerala",
-    bedrooms: 3,
-    bathrooms: 3,
-    max_guests: 6,
-    price_per_night: 21000,
-    price_category: "Premium",
-    villa_type: "Tea Estate",
-    amenities: ["Tea Garden View", "Walking Trails", "AC", "WiFi", "Parking"],
+    amenities: ["Lake View", "Rooftop Dining", "Pool", "AC", "WiFi", "Parking"],
     pet_friendly: false,
-    description: "Charming villa surrounded by rolling tea gardens and misty hills"
-  },
-  {
-    id: "villa_017",
-    name: "The Grand Manor",
-    location: "Coorg",
-    region: "Karnataka",
-    bedrooms: 6,
-    bathrooms: 6,
-    max_guests: 12,
-    price_per_night: 48000,
-    price_category: "Ultra-Luxury",
-    villa_type: "Estate",
-    amenities: ["Private Pool", "Banquet Hall", "Chef Service", "AC", "WiFi", "Parking"],
-    pet_friendly: false,
-    description: "Sprawling estate perfect for large family gatherings and celebrations"
-  },
-  {
-    id: "villa_018",
-    name: "Sky Villa",
-    location: "Lonavala",
-    region: "Western Ghats",
-    bedrooms: 3,
-    bathrooms: 3,
-    max_guests: 6,
-    price_per_night: 19500,
-    price_category: "Premium",
-    villa_type: "Hill Station",
-    amenities: ["Rooftop Terrace", "Valley View", "AC", "WiFi"],
-    pet_friendly: true,
-    description: "Modern villa with stunning rooftop terrace and uninterrupted valley views"
-  },
-  {
-    id: "villa_019",
-    name: "Seaside Sanctuary",
-    location: "Chennai",
-    region: "East Coast Road",
-    bedrooms: 4,
-    bathrooms: 4,
-    max_guests: 8,
-    price_per_night: 27000,
-    price_category: "Luxury",
-    villa_type: "Beachfront",
-    amenities: ["Private Pool", "Beach Access", "Garden", "AC", "WiFi", "Parking"],
-    pet_friendly: true,
-    description: "Contemporary beach villa on the scenic East Coast Road"
-  },
-  {
-    id: "villa_020",
-    name: "Saffron Stays",
-    location: "Nainital",
-    region: "Uttarakhand",
-    bedrooms: 3,
-    bathrooms: 3,
-    max_guests: 6,
-    price_per_night: 17000,
-    price_category: "Premium",
-    villa_type: "Lake View",
-    amenities: ["Lake View", "Garden", "Bonfire", "AC", "WiFi"],
-    pet_friendly: true,
-    description: "Cozy lakeside cottage with garden and Himalayan views"
+    description: "Luxurious villa overlooking Lake Pichola"
   }
 ];
 
@@ -512,6 +361,7 @@ router.post('/api/tools/get-pricing', async (request, env) => {
   
   let message = `💰 Pricing for ${villa.name}\n`;
   message += `${nights} nights × ₹${villa.price_per_night.toLocaleString()} = ₹${basePrice.toLocaleString()}\n\n`;
+  
   if (discounts.length > 0) {
     message += `🎁 Discounts Applied:\n`;
     discounts.forEach(d => {
@@ -519,10 +369,12 @@ router.post('/api/tools/get-pricing', async (request, env) => {
     });
     message += `   Total Discount: -₹${totalDiscount.toLocaleString()}\n\n`;
   }
+  
   message += `Subtotal: ₹${subtotal.toLocaleString()}\n`;
   message += `Taxes (18% GST): ₹${taxes.toLocaleString()}\n`;
   message += `🏆 TOTAL: ₹${total.toLocaleString()}\n`;
   message += `Per person: ₹${Math.round(total / (guests || 1)).toLocaleString()}`;
+  
   return jsonResponse({
     success: true,
     message,
@@ -539,32 +391,7 @@ router.post('/api/tools/get-pricing', async (request, env) => {
   });
 });
 
-// Tool 3a: Get Villa Details via Browser (Live StayVista scraping)
-router.post('/api/tools/get-villa-details', async (request, env) => {
-  const params = await request.json();
-  const { villa_name, villa_id } = params;
-  if (!villa_name) {
-    return jsonResponse({
-      success: false,
-      message: "Please provide a villa name so I can look up the details for you.",
-      villa_name: ""
-    }, 400);
-  }
-  try {
-    const result = await fetchVillaDetailsFromStayVista(villa_name, villa_id);
-    return jsonResponse(result);
-  } catch (e) {
-    console.error("Browser tool error:", e);
-    return jsonResponse({
-      success: false,
-      villa_name: villa_name,
-      found: false,
-      message: "I encountered an issue pulling up those details. Let me connect you with our villa specialist who can assist personally.",
-      fallback_price_range: "₹15,000 – ₹45,000 per night",
-      next_step: "Ask guest for preferred location, dates, and budget so our team can curate options."
-    }, 500);
-  }
-});
+// Tool 4: Villa Details
 router.post('/api/tools/villa-details', async (request, env) => {
   const params = await request.json();
   const villa = VILLAS.find(v => v.id === params.villa_id);
@@ -1031,224 +858,6 @@ export default {
     }
   }
 };
-
-// ============================================
-// BROWSER AGENT FUNCTIONS (get-villa-details)
-// ============================================
-
-async function fetchVillaDetailsFromStayVista(villaName, villaId) {
-  // Step 0: Check local mock database first (for demo/testing)
-  const localMatch = VILLAS.find(v => 
-    v.name.toLowerCase().includes(villaName.toLowerCase()) ||
-    (villaId && v.id === villaId)
-  );
-  if (localMatch) {
-    return {
-      success: true,
-      villa_name: localMatch.name,
-      found: true,
-      source: "local_database",
-      villa_url: `https://www.stayvista.com/villas/${localMatch.id}`,
-      location: `${localMatch.location}, ${localMatch.region}`,
-      price_per_night: `₹${localMatch.price_per_night.toLocaleString()}`,
-      bedrooms: String(localMatch.bedrooms),
-      bathrooms: String(localMatch.bathrooms),
-      max_guests: String(localMatch.max_guests),
-      amenities: localMatch.amenities,
-      description: localMatch.description,
-      images: [],
-      pet_friendly: localMatch.pet_friendly,
-      villa_type: localMatch.villa_type,
-      price_category: localMatch.price_category,
-      availability_status: "Requires date-specific check — use check_availability tool",
-      recommendation: `${localMatch.name} in ${localMatch.location} offers ${localMatch.bedrooms} bedrooms for up to ${localMatch.max_guests} guests at ₹${localMatch.price_per_night.toLocaleString()} per night. Key amenities include ${localMatch.amenities.slice(0, 4).join(", ")}.`,
-    };
-  }
-
-  // Step 1: Try to search StayVista (works for client-side rendered sites via API if available)
-  const searchUrl = `https://www.stayvista.com/search?query=${encodeURIComponent(villaName)}`;
-  
-  const searchResponse = await fetch(searchUrl, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-      "Accept-Language": "en-US,en;q=0.5",
-    },
-  });
-
-  if (!searchResponse.ok) {
-    return {
-      villa_name: villaName,
-      found: false,
-      message: "StayVista search is temporarily unavailable.",
-      fallback_price_range: "₹15,000 – ₹45,000 per night",
-      suggestions: getSimilarVillaSuggestions(villaName),
-      next_step: "Ask guest for their preferred location, dates, and budget so our team can curate options.",
-    };
-  }
-
-  const searchHtml = await searchResponse.text();
-  const villaLinks = extractVillaLinks(searchHtml, villaName);
-
-  if (villaLinks.length === 0) {
-    return {
-      villa_name: villaName,
-      found: false,
-      message: `I couldn't locate "${villaName}" on StayVista. It may be sold out, renamed, or available under a slightly different name.`,
-      fallback_price_range: "₹15,000 – ₹45,000 per night",
-      suggestions: getSimilarVillaSuggestions(villaName),
-      next_step: "Ask guest for their preferred location, dates, and budget so our team can curate options.",
-    };
-  }
-
-  // Step 2: Open the villa page and extract details
-  const villaUrl = villaLinks[0];
-  const villaResponse = await fetch(`https://www.stayvista.com${villaUrl}`, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-      "Accept-Language": "en-US,en;q=0.5",
-    },
-  });
-
-  const villaHtml = await villaResponse.text();
-  const details = extractVillaData(villaHtml, villaUrl);
-
-  return {
-    success: true,
-    villa_name: details.name || villaName,
-    found: true,
-    villa_url: `https://www.stayvista.com${villaUrl}`,
-    location: details.location || "StayVista",
-    price_per_night: details.price || "Contact for pricing",
-    bedrooms: details.bedrooms || "",
-    bathrooms: details.bathrooms || "",
-    max_guests: details.maxGuests || "",
-    amenities: details.amenities || [],
-    description: details.description || "",
-    images: details.images || [],
-    availability_status: "Requires date-specific check — use check_availability tool",
-    recommendation: formatRecommendation(details),
-  };
-}
-
-function extractVillaLinks(html, query) {
-  const links = [];
-  const regex = /href="(\/villas\/[^"]+)"/g;
-  let match;
-  while ((match = regex.exec(html)) !== null) {
-    const url = match[1];
-    if (!links.includes(url)) links.push(url);
-  }
-  const altRegex = /href="(\/properties\/[^"]+)"/g;
-  while ((match = altRegex.exec(html)) !== null) {
-    const url = match[1];
-    if (!links.includes(url)) links.push(url);
-  }
-  return links.slice(0, 3);
-}
-
-function extractVillaData(html, urlPath) {
-  const data = {
-    name: "", location: "", price: "",
-    bedrooms: "", bathrooms: "", maxGuests: "",
-    amenities: [], description: "", images: [],
-  };
-
-  // Extract name from <title> or h1
-  const titleMatch = html.match(/<title>([^<]+)/i);
-  if (titleMatch) {
-    data.name = titleMatch[1].replace(/\s*\|\s*StayVista/, "").trim();
-  }
-
-  // Extract location
-  const locationMatch = html.match(/"location"\s*:\s*"([^"]+)"/i) || 
-    html.match(/"city"\s*:\s*"([^"]+)"/i) ||
-    html.match(/<span[^>]*class="[^"]*location[^"]*"[^>]*>([^<]+)/i);
-  if (locationMatch) data.location = locationMatch[1].trim();
-
-  // Extract price - look for ₹ or Rs patterns
-  const priceMatch = html.match(/[₹Rs.\s]+([\d,]+(?:\s*-\s*[\d,]+)?)/i) ||
-    html.match(/price["\s]*[:=]["\s]*["']?([\d,]+)/i);
-  if (priceMatch) data.price = `₹${priceMatch[1].trim()}`;
-
-  // Extract bedrooms
-  const bedMatch = html.match(/(\d+)\s*(?:Bedroom|BHK|bed)/i);
-  if (bedMatch) data.bedrooms = bedMatch[1];
-
-  // Extract bathrooms
-  const bathMatch = html.match(/(\d+)\s*Bathroom/i);
-  if (bathMatch) data.bathrooms = bathMatch[1];
-
-  // Extract max guests
-  const guestMatch = html.match(/(\d+)\s*(?:Guests?|Max Guests?)/i);
-  if (guestMatch) data.maxGuests = guestMatch[1];
-
-  // Extract amenities from JSON
-  const amenityRegex = /"amenities"\s*:\s*\[([^\]]+)\]/i;
-  const amenityMatch = html.match(amenityRegex);
-  if (amenityMatch) {
-    const raw = amenityMatch[1];
-    const items = raw.match(/"([^"]+)"/g);
-    if (items) {
-      data.amenities = items.map(s => s.replace(/"/g, "")).slice(0, 8);
-    }
-  }
-  if (data.amenities.length === 0) {
-    const iconRegex = /<span[^>]*class="[^"]*amenity[^"]*"[^>]*>([^<]+)/gi;
-    let am;
-    while ((am = iconRegex.exec(html)) !== null) {
-      if (am[1].trim().length > 2 && !data.amenities.includes(am[1].trim())) {
-        data.amenities.push(am[1].trim());
-      }
-    }
-  }
-
-  // Extract description
-  const descMatch = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i) ||
-    html.match(/"description"\s*:\s*"([^"]{50,})"/i);
-  if (descMatch) {
-    data.description = descMatch[1].replace(/\\n/g, " ").replace(/\\/g, "").trim();
-  }
-
-  // Extract images
-  const imgRegex = /"url"\s*:\s*"(https:\/\/[^"]+\.(?:jpg|jpeg|png|webp))"/gi;
-  let img;
-  while ((img = imgRegex.exec(html)) !== null) {
-    if (!data.images.includes(img[1])) data.images.push(img[1]);
-  }
-  if (data.images.length === 0) {
-    const ogImage = html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/i);
-    if (ogImage) data.images.push(ogImage[1]);
-  }
-
-  return data;
-}
-
-function formatRecommendation(details) {
-  const parts = [];
-  if (details.name) parts.push(`${details.name}`);
-  if (details.location) parts.push(`in ${details.location}`);
-  if (details.bedrooms) parts.push(`offers ${details.bedrooms} bedrooms`);
-  if (details.maxGuests) parts.push(`for up to ${details.maxGuests} guests`);
-  if (details.price) parts.push(`at ${details.price} per night`);
-  let rec = parts.join(" ");
-  if (details.amenities?.length > 0) {
-    rec += `. Key amenities include ${details.amenities.slice(0, 4).join(", ")}.`;
-  }
-  return rec || "A beautiful villa option — ask me about availability and pricing for your dates.";
-}
-
-function getSimilarVillaSuggestions(query) {
-  const queryLower = query.toLowerCase();
-  return VILLAS.filter(v => 
-    v.location.toLowerCase().includes(queryLower) ||
-    v.villa_type.toLowerCase().includes(queryLower)
-  ).slice(0, 3).map(v => ({
-    id: v.id, name: v.name, location: v.location,
-    price_per_night: v.price_per_night, bedrooms: v.bedrooms
-  }));
-}
 
 // ============================================
 // HELPER FUNCTIONS
