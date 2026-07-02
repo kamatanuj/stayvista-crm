@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Villa Listings — StayVista</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #1a1a2e; }
+    .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .logo { font-size: 24px; font-weight: 700; }
+    .logo span { color: #d4af37; }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 14px; }
+    .nav-links a:hover { color: #d4af37; }
+
+    .search-summary { background: white; padding: 16px 40px; border-bottom: 1px solid #e5e7eb; font-size: 14px; color: #666; }
+    .search-summary strong { color: #1a1a2e; }
+    .search-filters { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+    .filter-pill { background: #f0f4ff; border: 1px solid #c7d2fe; border-radius: 20px; padding: 4px 12px; font-size: 13px; color: #1e40af; }
+
+    .villas-container { max-width: 1200px; margin: 0 auto; padding: 40px; }
+    .villas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px; }
+    .villa-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: 3px solid transparent; }
+    .villa-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .villa-card img { width: 100%; height: 220px; object-fit: cover; }
+    .villa-card .badge { position: absolute; top: 12px; right: 12px; background: rgba(212, 175, 55, 0.95); color: #1a1a2e; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 4px; }
+    .villa-card .image-wrap { position: relative; }
+    .villa-card .info { padding: 16px 20px 20px; }
+    .villa-card h3 { font-size: 18px; margin-bottom: 4px; }
+    .villa-card .location { font-size: 13px; color: #666; margin-bottom: 8px; }
+    .villa-card .features { display: flex; gap: 12px; font-size: 13px; color: #444; margin-bottom: 12px; flex-wrap: wrap; }
+    .villa-card .features span { background: #f3f4f6; padding: 2px 8px; border-radius: 4px; }
+    .villa-card .price { font-size: 20px; font-weight: 700; color: #d4af37; }
+    .villa-card .price small { font-size: 13px; color: #666; font-weight: 400; }
+    .villa-card .rating { font-size: 13px; color: #666; }
+    .villa-card .rating strong { color: #22c55e; }
+
+    .villa-highlight { animation: villa-pulse 1.5s ease-in-out; border: 3px solid #d4af37 !important; box-shadow: 0 0 24px rgba(212, 175, 55, 0.6) !important; }
+    @keyframes villa-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+
+    /* Voice controls */
+    .voice-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(26,26,46,0.95); border-radius: 30px; padding: 8px 12px; display: flex; align-items: center; gap: 12px; z-index: 10000; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+    .voice-bar button { border: none; border-radius: 24px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .voice-bar .start-btn { background: #d4af37; color: #1a1a2e; }
+    .voice-bar .end-btn { background: #e74c3c; color: white; display: none; }
+    .voice-bar .status-text { color: #d4af37; font-size: 13px; }
+    .voice-bar .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
+    .voice-bar .dot.on { background: #22c55e; }
+    .voice-bar .dot.off { background: #888; }
+    .voice-bar .dot.wait { background: #f59e0b; animation: pulse-rec 1s infinite; }
+    @keyframes pulse-rec { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .footer { background: #1a1a2e; color: rgba(255,255,255,0.7); padding: 40px; text-align: center; font-size: 13px; margin-top: 60px; }
+    [data-section] { scroll-margin-top: 80px; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo">Stay<span>Vista</span></div>
+    <nav class="nav-links">
+      <a href="/">Home</a>
+      <a href="/villas.html">Villas</a>
+      <a href="/#destinations">Destinations</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="search-summary">
+    <div>Showing villas matching your criteria:</div>
+    <div class="search-filters" id="searchFilters"></div>
+  </div>
+
+  <!-- Villas Listing -->
+  <section class="villas-container" id="villas" data-section="villas">
+    <div class="villas-grid" id="villasGrid"></div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="villas-container" id="reviews" data-section="reviews" style="border-top: 1px solid #e5e7eb; padding-top: 40px;">
+    <h2 style="font-size: 24px; margin-bottom: 20px;">Guest Reviews</h2>
+    <div class="villas-grid">
+      <div class="villa-card" style="padding: 24px;">
+        <p style="font-size: 15px; line-height: 1.6;">"Absolutely stunning property! The pool was pristine, the staff was attentive, and the location was perfect for our family reunion. Will definitely book again."</p>
+        <p style="margin-top: 12px; font-size: 13px; color: #666;">— Rohit S., stayed at Villa Serenity, Goa</p>
+        <p style="margin-top: 4px;"><strong style="color:#22c55e;">★★★★★</strong> 5.0</p>
+      </div>
+      <div class="villa-card" style="padding: 24px;">
+        <p style="font-size: 15px; line-height: 1.6;">"The villa exceeded all expectations. Breathtaking views of the valley, well-maintained amenities, and the concierge service was top-notch."</p>
+        <p style="margin-top: 12px; font-size: 13px; color: #666;">— Priya M., stayed at Hilltop Haven, Lonavala</p>
+        <p style="margin-top: 4px;"><strong style="color:#22c55e;">★★★★★</strong> 4.9</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Amenities -->
+  <section class="villas-container" id="amenities" data-section="amenities" style="border-top: 1px solid #e5e7eb; padding-top: 40px;">
+    <h2 style="font-size: 24px; margin-bottom: 20px;">Standard Amenities at All Villas</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 16px; font-size: 14px;">
+      <div>🏊 Private Pool</div><div>🍳 Fully Equipped Kitchen</div><div>🧹 Daily Housekeeping</div>
+      <div>📶 Free WiFi</div><div>🅿️ Free Parking</div><div>👨‍🍳 Chef on Request</div>
+      <div>🧊 Air Conditioning</div><div>📺 Smart TV</div><div>🌳 Private Garden</div>
+      <div>🛏️ Premium Linens</div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section class="villas-container" id="gallery" data-section="gallery" style="border-top: 1px solid #e5e7eb; padding-top: 40px;">
+    <h2 style="font-size: 24px; margin-bottom: 20px;">Gallery</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 16px;">
+      <img src="https://images.unsplash.com/photo-1613490493576-ca68de2900c5?w=500" style="border-radius:8px; height:200px; object-fit:cover; width:100%;" alt="Villa exterior">
+      <img src="https://images.unsplash.com/photo-1600593791207-1678763a9491?w=500" style="border-radius:8px; height:200px; object-fit:cover; width:100%;" alt="Villa pool">
+      <img src="https://images.unsplash.com/photo-1600210492493-0946911123ea?w=500" style="border-radius:8px; height:200px; object-fit:cover; width:100%;" alt="Villa living room">
+      <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500" style="border-radius:8px; height:200px; object-fit:cover; width:100%;" alt="Villa bedroom">
+    </div>
+  </section>
+
+  <!-- Booking -->
+  <section class="villas-container" id="booking" data-section="booking" style="border-top: 1px solid #e5e7eb; padding-top: 40px;">
+    <h2 style="font-size: 24px; margin-bottom: 20px;">Ready to Book?</h2>
+    <p style="font-size: 16px; color: #666; margin-bottom: 24px;">Talk to our AI voice concierge or call <strong>+91-91679-28471</strong> to complete your booking.</p>
+  </section>
+
+  <footer class="footer"><p>StayVista © 2025 | Script Your Stay</p></footer>
+
+  <!-- Voice control bar -->
+  <div class="voice-bar" id="voiceBar">
+    <button class="start-btn" id="startCallBtn">🔊 Start Voice Chat</button>
+    <button class="end-btn" id="endCallBtn">⏹️ End Call</button>
+    <span class="status-text" id="statusText"><span class="dot off" id="statusDot"></span></span>
+  </div>
+
+  <!-- Client tools (non-module, loads first) -->
+  <script src="/convai-tools.js"></script>
+
+  <!-- Villa data + rendering + ElevenLabs SDK -->
+  <script type="module">
+    // === Mock villa database ===
+    const ALL_VILLAS = [
+      { id: "SV-GOA-001", name: "Villa Serenity", location: "Goa", guests: 8, bedrooms: 4, price: 28000, type: "Beachfront", rating: 4.9, img: "https://images.unsplash.com/photo-1613490493576-ca68de2900c5?w=600", features: ["Private Pool", "Beach Access", "4 BHK", "AC"] },
+      { id: "SV-GOA-002", name: "Casa de Sol", location: "Goa", guests: 12, bedrooms: 5, price: 35000, type: "Party", rating: 4.8, img: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=600", features: ["Pool", "Party Deck", "5 BHK", "Bar"] },
+      { id: "SV-GOA-003", name: "The Beach House", location: "Goa", guests: 6, bedrooms: 3, price: 22000, type: "Beachfront", rating: 4.7, img: "https://images.unsplash.com/photo-1571896349842-33c891248539?w=600", features: ["Beachfront", "Pool", "3 BHK", "Pet-Friendly"] },
+      { id: "SV-LON-001", name: "Hilltop Haven", location: "Lonavala", guests: 10, bedrooms: 4, price: 24000, type: "Hill", rating: 4.9, img: "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600", features: ["Valley View", "Pool", "4 BHK", "Bonfire"] },
+      { id: "SV-LON-002", name: "Misty Mountains", location: "Lonavala", guests: 8, bedrooms: 3, price: 18000, type: "Hill", rating: 4.6, img: "https://images.unsplash.com/photo-1605619227873-5d5e2d5e1b6a?w=600", features: ["Pool", "Garden", "3 BHK", "WiFi"] },
+      { id: "SV-ALI-001", name: "Coastal Retreat", location: "Alibaug", guests: 8, bedrooms: 4, price: 26000, type: "Beachfront", rating: 4.8, img: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600", features: ["Beach Access", "Pool", "4 BHK", "AC"] },
+      { id: "SV-MAN-001", name: "Valley View Villa", location: "Manali", guests: 12, bedrooms: 5, price: 30000, type: "Hill", rating: 4.7, img: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600", features: ["Mountain View", "Fireplace", "5 BHK", "Hot Tub"] },
+      { id: "SV-COO-001", name: "Coffee County", location: "Coorg", guests: 6, bedrooms: 3, price: 16000, type: "Eco-Friendly", rating: 4.8, img: "https://images.unsplash.com/photo-1600593791207-1678763a9491?w=600", features: ["Plantation View", "Pool", "3 BHK", "Nature Walk"] },
+      { id: "SV-UDA-001", name: "Lake Heritage", location: "Udaipur", guests: 10, bedrooms: 4, price: 32000, type: "Heritage", rating: 4.9, img: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600", features: ["Lake View", "Heritage", "4 BHK", "Rooftop"] },
+      { id: "SV-MAB-001", name: "Strawberry Fields", location: "Mahabaleshwar", guests: 8, bedrooms: 3, price: 20000, type: "Hill", rating: 4.6, img: "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=600", features: ["Garden", "Pool", "3 BHK", "Valley View"] }
+    ];
+
+    // === Parse URL params and filter ===
+    const params = new URLSearchParams(window.location.search);
+    const filters = {
+      location: params.get('location') || '',
+      guests: params.get('guests') ? parseInt(params.get('guests')) : null,
+      checkIn: params.get('checkIn') || '',
+      checkOut: params.get('checkOut') || '',
+      maxBudget: params.get('maxBudget') ? parseInt(params.get('maxBudget')) : null,
+      villaType: params.get('villaType') || '',
+      bedrooms: params.get('bedrooms') ? parseInt(params.get('bedrooms')) : null
+    };
+
+    const filtersContainer = document.getElementById('searchFilters');
+    Object.entries(filters).forEach(([key, val]) => {
+      if (val) {
+        const pill = document.createElement('span');
+        pill.className = 'filter-pill';
+        pill.textContent = `${key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase())}: ${val}`;
+        filtersContainer.appendChild(pill);
+      }
+    });
+    if (filtersContainer.children.length === 0) {
+      filtersContainer.innerHTML = '<span class="filter-pill">All villas</span>';
+    }
+
+    // Filter villas
+    let villas = ALL_VILLAS.filter(v => {
+      if (filters.location && !v.location.toLowerCase().includes(filters.location.toLowerCase())) return false;
+      if (filters.guests && v.guests < filters.guests) return false;
+      if (filters.maxBudget && v.price > filters.maxBudget) return false;
+      if (filters.villaType && !v.type.toLowerCase().includes(filters.villaType.toLowerCase())) return false;
+      if (filters.bedrooms && v.bedrooms < filters.bedrooms) return false;
+      return true;
+    });
+    if (villas.length === 0) villas = ALL_VILLAS;
+
+    // === Render villa cards ===
+    const grid = document.getElementById('villasGrid');
+    villas.forEach(villa => {
+      const card = document.createElement('div');
+      card.className = 'villa-card';
+      card.setAttribute('data-villa-id', villa.id);
+      card.setAttribute('data-villa-name', villa.name);
+      card.onclick = () => { window.location.href = `/villa/${villa.id}`; };
+      card.innerHTML = `
+        <div class="image-wrap">
+          <img src="${villa.img}" alt="${villa.name}">
+          <div class="badge">${villa.type}</div>
+        </div>
+        <div class="info">
+          <h3>${villa.name}</h3>
+          <div class="location">📍 ${villa.location}, India</div>
+          <div class="features">${villa.features.map(f => `<span>${f}</span>`).join('')}</div>
+          <div class="rating"><strong>★ ${villa.rating}</strong> · ${villa.guests} guests · ${villa.bedrooms} BHK</div>
+          <div class="price" style="margin-top: 8px;">₹${villa.price.toLocaleString('en-IN')}<small> /night</small></div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    // === ElevenLabs Client SDK ===
+    import { Conversation } from "https://esm.sh/@elevenlabs/client@1.14.0";
+
+    const AGENT_ID = 'agent_5201krxd0zmhfj086ajtr29zzgc3';
+    let conversation = null;
+    let isConnected = false;
+
+    const startBtn = document.getElementById('startCallBtn');
+    const endBtn = document.getElementById('endCallBtn');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+
+    startBtn.addEventListener('click', async () => {
+      if (isConnected) return;
+      startBtn.disabled = true;
+      startBtn.textContent = 'Connecting...';
+      statusDot.className = 'dot wait';
+
+      try {
+        conversation = await Conversation.startSession({
+          agentId: AGENT_ID,
+          clientTools: window.StayVistaClientTools,
+        });
+        isConnected = true;
+        startBtn.style.display = 'none';
+        endBtn.style.display = 'inline-block';
+        statusDot.className = 'dot on';
+        statusText.innerHTML = '<span class="dot on" id="statusDot"></span> Voice active 🎙️';
+        console.log('[StayVista] Conversation started, client tools registered.');
+      } catch (err) {
+        console.error('[StayVista] Failed to start session:', err);
+        startBtn.disabled = false;
+        startBtn.textContent = '🔊 Start Voice Chat';
+        statusDot.className = 'dot off';
+        statusText.innerHTML = '<span class="dot off" id="statusDot"></span> Failed: ' + err.message;
+      }
+    });
+
+    endBtn.addEventListener('click', async () => {
+      if (!conversation) return;
+      try { await conversation.endSession(); } catch(e) {}
+      isConnected = false;
+      conversation = null;
+      startBtn.style.display = 'inline-block';
+      startBtn.disabled = false;
+      startBtn.textContent = '🔊 Start Voice Chat';
+      endBtn.style.display = 'none';
+      statusText.innerHTML = '<span class="dot off" id="statusDot"></span>';
+    });
+  </script>
+
+</body>
+</html>
