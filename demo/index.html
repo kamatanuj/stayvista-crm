@@ -4,96 +4,186 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StayVista — Luxury Villas (Voice AI Demo)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #1a1a2e; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #faf9f7; color: #1a1a2e; overflow-x: hidden; }
+    h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; }
 
     /* Header */
-    .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .logo { font-size: 24px; font-weight: 700; cursor: pointer; }
-    .logo span { color: #d4af37; }
-    .nav-links { display: flex; gap: 24px; }
-    .nav-links a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 14px; cursor: pointer; }
-    .nav-links a:hover { color: #d4af37; }
+    .header { background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); padding: 14px 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .logo { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; cursor: pointer; color: #1a1a2e; letter-spacing: -0.5px; }
+    .logo span { color: #c99700; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { color: #555; text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: color 0.2s; }
+    .nav-links a:hover { color: #c99700; }
 
     /* SPA Views — only one visible at a time */
     .spa-view { display: none; }
     .spa-view.active { display: block; }
 
-    /* Hero */
-    .hero { background: linear-gradient(135deg, #16213e 0%, #0f3460 50%, #1a1a2e 100%); color: white; padding: 80px 40px; text-align: center; position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://images.unsplash.com/photo-1571896349842-33c891248539?w=1600') center/cover; opacity: 0.15; }
-    .hero h1 { font-size: 42px; margin-bottom: 16px; position: relative; }
-    .hero p { font-size: 18px; opacity: 0.9; max-width: 600px; margin: 0 auto 32px; position: relative; }
-    .hero .cta { display: inline-block; background: #d4af37; color: #1a1a2e; padding: 14px 36px; border-radius: 30px; font-size: 16px; font-weight: 600; text-decoration: none; position: relative; transition: transform 0.2s; cursor: pointer; border: none; }
-    .hero .cta:hover { transform: scale(1.05); }
+    /* Hero — full viewport with background image */
+    .hero { position: relative; min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; }
+    .hero-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1920&q=80') center/cover; transform: scale(1.05); animation: hero-zoom 20s ease-in-out infinite alternate; }
+    .hero-bg::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.55) 100%); }
+    @keyframes hero-zoom { 0% { transform: scale(1.05); } 100% { transform: scale(1.15); } }
+    .hero-content { position: relative; z-index: 2; max-width: 800px; padding: 0 40px; }
+    .hero h1 { font-size: 56px; font-weight: 700; line-height: 1.15; margin-bottom: 20px; text-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+    .hero .hero-sub { font-size: 20px; font-weight: 300; opacity: 0.95; max-width: 580px; margin: 0 auto 36px; line-height: 1.6; text-shadow: 0 1px 10px rgba(0,0,0,0.3); }
+    .hero .cta-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .hero .cta { display: inline-block; background: #c99700; color: white; padding: 16px 40px; border-radius: 50px; font-size: 16px; font-weight: 600; text-decoration: none; position: relative; transition: all 0.3s; cursor: pointer; border: none; font-family: 'Inter', sans-serif; box-shadow: 0 4px 20px rgba(201,151,0,0.4); }
+    .hero .cta:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(201,151,0,0.5); }
+    .hero .cta-outline { background: transparent; border: 2px solid rgba(255,255,255,0.6); color: white; box-shadow: none; }
+    .hero .cta-outline:hover { background: rgba(255,255,255,0.1); border-color: white; box-shadow: none; }
+
+    /* Trust bar */
+    .trust-bar { background: #1a1a2e; color: rgba(255,255,255,0.9); padding: 16px 40px; display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; font-size: 14px; }
+    .trust-bar .trust-item { display: flex; align-items: center; gap: 8px; }
+    .trust-bar .trust-item strong { color: #c99700; font-size: 18px; font-weight: 700; }
+
+    /* Section heading */
+    .section-title { text-align: center; max-width: 700px; margin: 0 auto 40px; }
+    .section-title h2 { font-size: 36px; font-weight: 700; margin-bottom: 12px; }
+    .section-title p { font-size: 16px; color: #666; line-height: 1.6; }
 
     /* Destinations */
-    .destinations { max-width: 1200px; margin: 0 auto; padding: 60px 40px; }
-    .destinations h2 { font-size: 28px; margin-bottom: 32px; text-align: center; }
-    .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; }
-    .dest-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s; cursor: pointer; }
-    .dest-card:hover { transform: translateY(-4px); }
-    .dest-card img { width: 100%; height: 180px; object-fit: cover; }
-    .dest-card .info { padding: 16px; }
-    .dest-card h3 { font-size: 18px; margin-bottom: 4px; }
-    .dest-card .count { font-size: 13px; color: #666; }
-    .dest-card .price-from { font-size: 15px; color: #d4af37; font-weight: 600; margin-top: 6px; }
+    .destinations { max-width: 1280px; margin: 0 auto; padding: 80px 40px; }
+    .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; }
+    .dest-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: all 0.3s; cursor: pointer; }
+    .dest-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+    .dest-card .dest-img { width: 100%; height: 220px; object-fit: cover; transition: transform 0.4s; }
+    .dest-card:hover .dest-img { transform: scale(1.08); }
+    .dest-card .dest-img-wrap { overflow: hidden; position: relative; }
+    .dest-card .dest-badge { position: absolute; top: 14px; left: 14px; background: rgba(255,255,255,0.92); color: #1a1a2e; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px; }
+    .dest-card .info { padding: 20px 22px; }
+    .dest-card h3 { font-size: 22px; margin-bottom: 6px; }
+    .dest-card .count { font-size: 14px; color: #888; margin-bottom: 10px; }
+    .dest-card .price-from { font-size: 15px; color: #c99700; font-weight: 600; }
+
+    /* Why StayVista — features section */
+    .features { background: white; padding: 80px 40px; }
+    .features-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 32px; }
+    .feature-card { text-align: center; padding: 20px; }
+    .feature-card .icon { font-size: 48px; margin-bottom: 16px; }
+    .feature-card h3 { font-size: 20px; margin-bottom: 10px; }
+    .feature-card p { font-size: 14px; color: #666; line-height: 1.6; }
+
+    /* Gallery strip */
+    .gallery-strip { display: flex; gap: 4px; overflow: hidden; padding: 0; max-height: 280px; }
+    .gallery-strip img { flex: 1; min-width: 0; height: 280px; object-fit: cover; transition: flex 0.4s; }
+    .gallery-strip img:hover { flex: 2.5; }
 
     /* Voice Concierge Banner */
-    .voice-banner { background: linear-gradient(135deg, #d4af37 0%, #c49b30 100%); padding: 40px; text-align: center; margin: 0; }
-    .voice-banner h2 { font-size: 28px; color: #1a1a2e; margin-bottom: 8px; }
-    .voice-banner p { font-size: 16px; color: rgba(26,26,46,0.8); margin-bottom: 20px; }
+    .voice-banner { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 64px 40px; text-align: center; position: relative; overflow: hidden; }
+    .voice-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://images.unsplash.com/photo-1564507592333-c60657eea523?w=1920&q=80') center/cover; opacity: 0.12; }
+    .voice-banner h2 { font-size: 32px; color: white; margin-bottom: 12px; position: relative; }
+    .voice-banner p { font-size: 17px; color: rgba(255,255,255,0.8); margin-bottom: 24px; position: relative; max-width: 560px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+    .voice-banner .voice-cta { position: relative; display: inline-flex; align-items: center; gap: 10px; background: #c99700; color: white; padding: 14px 32px; border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer; border: none; font-family: 'Inter', sans-serif; transition: all 0.3s; box-shadow: 0 4px 20px rgba(201,151,0,0.3); }
+    .voice-banner .voice-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(201,151,0,0.4); }
 
     /* About */
-    .about { max-width: 900px; margin: 0 auto; padding: 60px 40px; text-align: center; }
-    .about h2 { font-size: 28px; margin-bottom: 20px; }
-    .about p { font-size: 16px; line-height: 1.8; color: #555; }
+    .about { max-width: 900px; margin: 0 auto; padding: 80px 40px; text-align: center; }
+    .about h2 { font-size: 36px; margin-bottom: 24px; }
+    .about p { font-size: 17px; line-height: 1.9; color: #555; max-width: 720px; margin: 0 auto; }
+    .about-stats { display: flex; justify-content: center; gap: 56px; margin-top: 48px; flex-wrap: wrap; }
+    .about-stat .num { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 700; color: #c99700; }
+    .about-stat .label { font-size: 14px; color: #888; margin-top: 4px; }
+
+    /* Contact */
+    .contact { background: #1a1a2e; color: rgba(255,255,255,0.85); padding: 64px 40px; text-align: center; }
+    .contact h2 { font-size: 28px; color: white; margin-bottom: 24px; }
+    .contact-info { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; font-size: 15px; }
+    .contact-info a { color: #c99700; text-decoration: none; }
 
     /* Footer */
-    .footer { background: #1a1a2e; color: rgba(255,255,255,0.7); padding: 40px; text-align: center; font-size: 13px; }
+    .footer { background: #111; color: rgba(255,255,255,0.5); padding: 24px 40px; text-align: center; font-size: 13px; }
+    .footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
 
     /* Search summary + filter pills */
-    .search-summary { background: white; padding: 16px 40px; border-bottom: 1px solid #e5e7eb; font-size: 14px; color: #666; }
+    .search-summary { background: white; padding: 20px 40px; border-bottom: 1px solid #e5e7eb; font-size: 14px; color: #666; position: sticky; top: 56px; z-index: 50; }
     .search-summary strong { color: #1a1a2e; }
-    .search-filters { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
-    .filter-pill { background: #f0f4ff; border: 1px solid #c7d2fe; border-radius: 20px; padding: 4px 12px; font-size: 13px; color: #1e40af; }
+    .search-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .filter-pill { background: #fef9ef; border: 1px solid #f0d997; border-radius: 20px; padding: 5px 14px; font-size: 13px; color: #8a6500; }
 
     /* Villa cards */
-    .villas-container { max-width: 1200px; margin: 0 auto; padding: 40px; }
-    .villas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px; }
-    .villa-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: 3px solid transparent; }
-    .villa-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
-    .villa-card img { width: 100%; height: 220px; object-fit: cover; }
-    .villa-card .badge { position: absolute; top: 12px; right: 12px; background: rgba(212,175,55,0.95); color: #1a1a2e; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 4px; }
-    .villa-card .image-wrap { position: relative; }
-    .villa-card .info { padding: 16px 20px 20px; }
-    .villa-card h3 { font-size: 18px; margin-bottom: 4px; }
-    .villa-card .location { font-size: 13px; color: #666; margin-bottom: 8px; }
-    .villa-card .features { display: flex; gap: 8px; font-size: 13px; color: #444; margin-bottom: 12px; flex-wrap: wrap; }
-    .villa-card .features span { background: #f3f4f6; padding: 2px 8px; border-radius: 4px; }
-    .villa-card .price { font-size: 20px; font-weight: 700; color: #d4af37; }
-    .villa-card .price small { font-size: 13px; color: #666; font-weight: 400; }
-    .villa-card .rating { font-size: 13px; color: #666; }
+    .villas-container { max-width: 1280px; margin: 0 auto; padding: 48px 40px; }
+    .villas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 32px; }
+    .villa-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: all 0.3s; cursor: pointer; border: 3px solid transparent; }
+    .villa-card:hover { transform: translateY(-6px); box-shadow: 0 12px 36px rgba(0,0,0,0.12); }
+    .villa-card .image-wrap { position: relative; overflow: hidden; }
+    .villa-card img { width: 100%; height: 260px; object-fit: cover; transition: transform 0.4s; }
+    .villa-card:hover img { transform: scale(1.06); }
+    .villa-card .badge { position: absolute; top: 14px; right: 14px; background: rgba(201,151,0,0.95); color: white; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px; }
+    .villa-card .info { padding: 20px 24px 24px; }
+    .villa-card h3 { font-size: 20px; margin-bottom: 6px; }
+    .villa-card .location { font-size: 14px; color: #888; margin-bottom: 10px; display: flex; align-items: center; gap: 4px; }
+    .villa-card .features { display: flex; gap: 8px; font-size: 13px; color: #555; margin-bottom: 14px; flex-wrap: wrap; }
+    .villa-card .features span { background: #f5f3ef; padding: 4px 10px; border-radius: 6px; font-weight: 500; }
+    .villa-card .price { font-size: 22px; font-weight: 700; color: #c99700; }
+    .villa-card .price small { font-size: 14px; color: #888; font-weight: 400; }
+    .villa-card .rating { font-size: 14px; color: #888; margin-top: 6px; }
     .villa-card .rating strong { color: #22c55e; }
 
-    .villa-highlight { animation: villa-pulse 1.5s ease-in-out; border: 3px solid #d4af37 !important; box-shadow: 0 0 24px rgba(212,175,55,0.6) !important; }
+    .villa-highlight { animation: villa-pulse 1.5s ease-in-out; border: 3px solid #c99700 !important; box-shadow: 0 0 28px rgba(201,151,0,0.5) !important; }
     @keyframes villa-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 
+    /* Booking confirmation overlay */
+    .booking-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 99999; display: none; align-items: center; justify-content: center; }
+    .booking-overlay.show { display: flex; }
+    .booking-card { background: white; border-radius: 20px; padding: 48px 40px; max-width: 480px; text-align: center; animation: booking-pop 0.4s ease; }
+    @keyframes booking-pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    .booking-card .checkmark { font-size: 64px; margin-bottom: 16px; }
+    .booking-card h2 { font-size: 28px; margin-bottom: 8px; }
+    .booking-card .booking-id { font-size: 16px; color: #c99700; font-weight: 600; margin-bottom: 24px; }
+    .booking-card .booking-details { text-align: left; background: #faf9f7; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .booking-card .booking-detail-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+    .booking-card .booking-detail-row span:first-child { color: #888; }
+    .booking-card .booking-detail-row span:last-child { font-weight: 600; }
+    .booking-card .close-btn { background: #c99700; color: white; border: none; border-radius: 50px; padding: 12px 32px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+
     /* Voice control bar (fixed at bottom, always visible) */
-    .voice-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(26,26,46,0.95); border-radius: 30px; padding: 8px 12px; display: flex; align-items: center; gap: 12px; z-index: 10000; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
-    .voice-bar button { border: none; border-radius: 24px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; }
-    .voice-bar .start-btn { background: #d4af37; color: #1a1a2e; }
+    .voice-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(26,26,46,0.96); backdrop-filter: blur(12px); border-radius: 50px; padding: 10px 14px; display: flex; align-items: center; gap: 14px; z-index: 10000; box-shadow: 0 8px 32px rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1); }
+    .voice-bar button { border: none; border-radius: 50px; padding: 12px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+    .voice-bar .start-btn { background: #c99700; color: white; box-shadow: 0 2px 12px rgba(201,151,0,0.3); }
+    .voice-bar .start-btn:hover { background: #d4a810; transform: scale(1.03); }
     .voice-bar .end-btn { background: #e74c3c; color: white; display: none; }
-    .voice-bar .status-text { color: #d4af37; font-size: 13px; min-width: 80px; }
+    .voice-bar .end-btn:hover { background: #c0392b; }
+    .voice-bar .status-text { color: #c99700; font-size: 14px; min-width: 90px; font-weight: 500; }
     .voice-bar .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
-    .voice-bar .dot.on { background: #22c55e; }
-    .voice-bar .dot.off { background: #888; }
+    .voice-bar .dot.on { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+    .voice-bar .dot.off { background: #555; }
     .voice-bar .dot.wait { background: #f59e0b; animation: pulse-rec 1s infinite; }
     @keyframes pulse-rec { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
+    /* Reviews section */
+    .reviews-section { max-width: 1280px; margin: 0 auto; padding: 48px 40px 80px; }
+    .reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 28px; }
+    .review-card { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .review-card .stars { color: #c99700; font-size: 18px; margin-bottom: 12px; }
+    .review-card .review-text { font-size: 15px; line-height: 1.7; color: #444; font-style: italic; margin-bottom: 16px; }
+    .review-card .reviewer { font-size: 14px; color: #888; }
+    .review-card .reviewer strong { color: #1a1a2e; }
+
+    /* Amenities */
+    .amenities-section { background: white; padding: 64px 40px; }
+    .amenities-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+    .amenity-item { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #444; }
+    .amenity-item .amenity-icon { font-size: 24px; }
+
     /* Sections */
     [data-section] { scroll-margin-top: 80px; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 36px; }
+      .hero .hero-sub { font-size: 16px; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 13px; }
+      .trust-bar { gap: 20px; padding: 14px 20px; }
+      .destinations, .villas-container, .reviews-section { padding: 48px 20px; }
+      .gallery-strip { flex-direction: column; max-height: none; }
+      .gallery-strip img { height: 200px; }
+    }
   </style>
 </head>
 <body>
@@ -111,55 +201,148 @@
 
   <!-- ==================== VIEW: HOME ==================== -->
   <div class="spa-view active" id="view-home">
+
+    <!-- Hero with full background image -->
     <section class="hero">
-      <h1>Luxury Villas & Vacation Rentals</h1>
-      <p>India's largest branded villa company. 500+ villas across 80+ destinations. Private pools, chef on request, daily housekeeping.</p>
-      <button class="cta" onclick="showView('view-villas'); renderVillas(null);">Browse All Villas</button>
-    </section>
-
-    <section class="voice-banner" data-section="concierge" id="concierge">
-      <h2>🎙️ Talk to Our AI Voice Concierge</h2>
-      <p>Ask for villas by location, budget, or guest count — our AI will show you matching properties instantly.</p>
-    </section>
-
-    <section class="destinations" id="destinations" data-section="destinations">
-      <h2>Popular Destinations</h2>
-      <div class="dest-grid">
-        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Goa'});">
-          <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=500" alt="Goa">
-          <div class="info"><h3>Goa</h3><div class="count">120+ villas</div><div class="price-from">From ₹22,000/night</div></div>
-        </div>
-        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Lonavala'});">
-          <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=500" alt="Lonavala">
-          <div class="info"><h3>Lonavala</h3><div class="count">80+ villas</div><div class="price-from">From ₹18,000/night</div></div>
-        </div>
-        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Alibaug'});">
-          <img src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=500" alt="Alibaug">
-          <div class="info"><h3>Alibaug</h3><div class="count">45+ villas</div><div class="price-from">From ₹20,000/night</div></div>
-        </div>
-        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Manali'});">
-          <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=500" alt="Manali">
-          <div class="info"><h3>Manali</h3><div class="count">30+ villas</div><div class="price-from">From ₹25,000/night</div></div>
-        </div>
-        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Coorg'});">
-          <img src="https://images.unsplash.com/photo-1600593791207-1678763a9491?w=500" alt="Coorg">
-          <div class="info"><h3>Coorg</h3><div class="count">25+ villas</div><div class="price-from">From ₹16,000/night</div></div>
-        </div>
-        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Udaipur'});">
-          <img src="https://images.unsplash.com/photo-1599661046289-e31897846e41?w=500" alt="Udaipur">
-          <div class="info"><h3>Udaipur</h3><div class="count">20+ villas</div><div class="price-from">From ₹28,000/night</div></div>
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <h1>Luxury Villas &<br>Holiday Homes in India</h1>
+        <p class="hero-sub">India's largest branded villa company. 500+ villas across 80+ destinations. Private pools, chef on request, daily housekeeping — your perfect getaway awaits.</p>
+        <div class="cta-group">
+          <button class="cta" onclick="showView('view-villas'); renderVillas(null);">Browse All Villas</button>
+          <button class="cta cta-outline" onclick="document.getElementById('concierge').scrollIntoView({behavior:'smooth'})">🎙️ Talk to AI Concierge</button>
         </div>
       </div>
     </section>
 
-    <section class="about" id="about-section" data-section="about">
-      <h2>About StayVista</h2>
-      <p>StayVista is India's largest branded villas company, offering 500+ luxury vacation rentals across 80+ destinations. Every villa comes with a private pool, daily housekeeping, and optional chef service. We've hosted over 50,000 happy guests since 2018.</p>
+    <!-- Trust Bar -->
+    <div class="trust-bar">
+      <div class="trust-item"><strong>500+</strong> Villas</div>
+      <div class="trust-item"><strong>80+</strong> Destinations</div>
+      <div class="trust-item"><strong>50K+</strong> Happy Guests</div>
+      <div class="trust-item"><strong>4.8★</strong> Avg Rating</div>
+      <div class="trust-item"><strong>24/7</strong> Support</div>
+    </div>
+
+    <!-- Gallery Strip — immersive villa imagery -->
+    <div class="gallery-strip">
+      <img src="https://images.unsplash.com/photo-1613492396189-3a51a5e6e5e0?w=600&q=80" alt="Villa pool">
+      <img src="https://images.unsplash.com/photo-1600593791207-1678763a9491?w=600&q=80" alt="Villa exterior">
+      <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=80" alt="Villa interior">
+      <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&q=80" alt="Mountain villa">
+      <img src="https://images.unsplash.com/photo-1571896349842-33c891248539?w=600&q=80" alt="Luxury villa">
+      <img src="https://images.unsplash.com/photo-1564507592333-c60657eea523?w=600&q=80" alt="Beach villa">
+    </div>
+
+    <!-- Destinations -->
+    <section class="destinations" id="destinations" data-section="destinations">
+      <div class="section-title">
+        <h2>Popular Destinations</h2>
+        <p>From beachside retreats in Goa to mountain getaways in Manali — discover our most-loved villa destinations across India.</p>
+      </div>
+      <div class="dest-grid">
+        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Goa'});">
+          <div class="dest-img-wrap">
+            <img class="dest-img" src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=600&q=80" alt="Goa">
+            <div class="dest-badge">120+ villas</div>
+          </div>
+          <div class="info"><h3>Goa</h3><div class="count">Beachside retreats & party villas</div><div class="price-from">From ₹22,000/night</div></div>
+        </div>
+        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Lonavala'});">
+          <div class="dest-img-wrap">
+            <img class="dest-img" src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=80" alt="Lonavala">
+            <div class="dest-badge">80+ villas</div>
+          </div>
+          <div class="info"><h3>Lonavala</h3><div class="count">Hillside villas with valley views</div><div class="price-from">From ₹18,000/night</div></div>
+        </div>
+        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Alibaug'});">
+          <div class="dest-img-wrap">
+            <img class="dest-img" src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80" alt="Alibaug">
+            <div class="dest-badge">45+ villas</div>
+          </div>
+          <div class="info"><h3>Alibaug</h3><div class="count">Coastal getaways near Mumbai</div><div class="price-from">From ₹20,000/night</div></div>
+        </div>
+        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Manali'});">
+          <div class="dest-img-wrap">
+            <img class="dest-img" src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&q=80" alt="Manali">
+            <div class="dest-badge">30+ villas</div>
+          </div>
+          <div class="info"><h3>Manali</h3><div class="count">Mountain retreats with snow views</div><div class="price-from">From ₹25,000/night</div></div>
+        </div>
+        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Coorg'});">
+          <div class="dest-img-wrap">
+            <img class="dest-img" src="https://images.unsplash.com/photo-1600593791207-1678763a9491?w=600&q=80" alt="Coorg">
+            <div class="dest-badge">25+ villas</div>
+          </div>
+          <div class="info"><h3>Coorg</h3><div class="count">Coffee estate stays in nature</div><div class="price-from">From ₹16,000/night</div></div>
+        </div>
+        <div class="dest-card" onclick="showView('view-villas'); renderVillas({location:'Udaipur'});">
+          <div class="dest-img-wrap">
+            <img class="dest-img" src="https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600&q=80" alt="Udaipur">
+            <div class="dest-badge">20+ villas</div>
+          </div>
+          <div class="info"><h3>Udaipur</h3><div class="count">Royal lakeside heritage villas</div><div class="price-from">From ₹28,000/night</div></div>
+        </div>
+      </div>
     </section>
 
-    <section class="about" id="contact-section" data-section="contact" style="border-top: 1px solid #e5e7eb;">
-      <h2>Contact</h2>
-      <p>📞 +91-91679-28471<br>✉️ care@stayvista.com<br>🌐 stayvista.com</p>
+    <!-- Voice Concierge Banner -->
+    <section class="voice-banner" data-section="concierge" id="concierge">
+      <h2>🎙️ Talk to Our AI Voice Concierge</h2>
+      <p>Just speak naturally — ask for villas by location, budget, or guest count. Our AI will show you matching properties instantly on your screen. No typing needed.</p>
+      <button class="voice-cta" onclick="document.getElementById('startCallBtn').click()">Start Voice Chat →</button>
+    </section>
+
+    <!-- Why StayVista — Features -->
+    <section class="features">
+      <div class="section-title">
+        <h2>Why Guests Choose StayVista</h2>
+        <p>Every villa is handpicked, professionally managed, and comes with our signature service guarantee.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon">🏊</div>
+          <h3>Private Pools</h3>
+          <p>Every villa comes with a private pool — no sharing with strangers. Dive in anytime, 8 AM to 10 PM.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">👨‍🍳</div>
+          <h3>Chef on Request</h3>
+          <p>Personal chef available at every villa. From local delicacies to your favourite comfort food — cooked to order.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🧹</div>
+          <h3>Daily Housekeeping</h3>
+          <p>Professional housekeeping every day of your stay. Fresh linens, clean towels, spotless rooms — guaranteed.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🛡️</div>
+          <h3>Verified & Safe</h3>
+          <p>Every villa is personally inspected by our team. 24/7 on-ground support and secure check-in at all properties.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="about" id="about-section" data-section="about">
+      <h2>About StayVista</h2>
+      <p>StayVista is India's largest branded villas company, offering 500+ luxury vacation rentals across 80+ destinations. Every villa comes with a private pool, daily housekeeping, and optional chef service. We've hosted over 50,000 happy guests since 2018, with an average rating of 4.8 stars across all properties. Our mission is simple: to make every stay unforgettable.</p>
+      <div class="about-stats">
+        <div class="about-stat"><div class="num">500+</div><div class="label">Villas</div></div>
+        <div class="about-stat"><div class="num">80+</div><div class="label">Destinations</div></div>
+        <div class="about-stat"><div class="num">50K+</div><div class="label">Happy Guests</div></div>
+        <div class="about-stat"><div class="num">4.8★</div><div class="label">Avg Rating</div></div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact-section" data-section="contact">
+      <h2>Get in Touch</h2>
+      <div class="contact-info">
+        <div>📞 +91-91679-28471</div>
+        <div>✉️ care@stayvista.com</div>
+        <div>🌐 <a href="https://www.stayvista.com">stayvista.com</a></div>
+      </div>
     </section>
   </div>
 
@@ -174,30 +357,49 @@
     </section>
 
     <!-- Reviews -->
-    <section class="villas-container" data-section="reviews" style="border-top: 1px solid #e5e7eb; padding-top: 40px;">
-      <h2 style="font-size: 24px; margin-bottom: 20px;">Guest Reviews</h2>
-      <div class="villas-grid">
-        <div class="villa-card" style="padding: 24px; cursor: default;">
-          <p style="font-size: 15px; line-height: 1.6;">"Absolutely stunning property! The pool was pristine, the staff was attentive, and the location was perfect for our family reunion."</p>
-          <p style="margin-top: 12px; font-size: 13px; color: #666;">— Rohit S., Villa Serenity, Goa</p>
-          <p style="margin-top: 4px;"><strong style="color:#22c55e;">★★★★★</strong> 5.0</p>
+    <section class="reviews-section" data-section="reviews">
+      <div class="section-title">
+        <h2>Guest Reviews</h2>
+        <p>Real experiences from real guests. See what travellers love about StayVista villas.</p>
+      </div>
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p class="review-text">"Absolutely stunning property! The pool was pristine, the staff was attentive, and the location was perfect for our family reunion. Will definitely book again."</p>
+          <div class="reviewer"><strong>Rohit S.</strong> — Villa Serenity, Goa</div>
         </div>
-        <div class="villa-card" style="padding: 24px; cursor: default;">
-          <p style="font-size: 15px; line-height: 1.6;">"The villa exceeded all expectations. Breathtaking views of the valley, well-maintained amenities, and the concierge service was top-notch."</p>
-          <p style="margin-top: 12px; font-size: 13px; color: #666;">— Priya M., Hilltop Haven, Lonavala</p>
-          <p style="margin-top: 4px;"><strong style="color:#22c55e;">★★★★★</strong> 4.9</p>
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p class="review-text">"The villa exceeded all expectations. Breathtaking views of the valley, well-maintained amenities, and the concierge service was top-notch. A 5-star experience."</p>
+          <div class="reviewer"><strong>Priya M.</strong> — Hilltop Haven, Lonavala</div>
+        </div>
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p class="review-text">"Perfect weekend getaway! The private pool was the highlight, and the chef cooked amazing local cuisine. The booking process was seamless. Highly recommended!"</p>
+          <div class="reviewer"><strong>Arjun & Family</strong> — Villa Arcadia, Goa</div>
         </div>
       </div>
     </section>
 
     <!-- Amenities -->
-    <section class="villas-container" data-section="amenities" style="border-top: 1px solid #e5e7eb; padding-top: 40px;">
-      <h2 style="font-size: 24px; margin-bottom: 20px;">Standard Amenities at All Villas</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 16px; font-size: 14px;">
-        <div>🏊 Private Pool</div><div>🍳 Fully Equipped Kitchen</div><div>🧹 Daily Housekeeping</div>
-        <div>📶 Free WiFi</div><div>🅿️ Free Parking</div><div>👨‍🍳 Chef on Request</div>
-        <div>🧊 Air Conditioning</div><div>📺 Smart TV</div><div>🌳 Private Garden</div>
-        <div>🛏️ Premium Linens</div>
+    <section class="amenities-section" data-section="amenities">
+      <div class="section-title">
+        <h2>Standard Amenities at All Villas</h2>
+        <p>Every StayVista villa comes equipped with these essentials — no extra charge.</p>
+      </div>
+      <div class="amenities-grid">
+        <div class="amenity-item"><span class="amenity-icon">🏊</span> Private Pool</div>
+        <div class="amenity-item"><span class="amenity-icon">🍳</span> Fully Equipped Kitchen</div>
+        <div class="amenity-item"><span class="amenity-icon">🧹</span> Daily Housekeeping</div>
+        <div class="amenity-item"><span class="amenity-icon">📶</span> Free WiFi</div>
+        <div class="amenity-item"><span class="amenity-icon">🅿️</span> Free Parking</div>
+        <div class="amenity-item"><span class="amenity-icon">👨‍🍳</span> Chef on Request</div>
+        <div class="amenity-item"><span class="amenity-icon">🧊</span> Air Conditioning</div>
+        <div class="amenity-item"><span class="amenity-icon">📺</span> Smart TV</div>
+        <div class="amenity-item"><span class="amenity-icon">🌳</span> Private Garden</div>
+        <div class="amenity-item"><span class="amenity-icon">🛏️</span> Premium Linens</div>
+        <div class="amenity-item"><span class="amenity-icon">🔥</span> Bonfire Area</div>
+        <div class="amenity-item"><span class="amenity-icon">🏸</span> Outdoor Games</div>
       </div>
     </section>
   </div>
@@ -205,9 +407,20 @@
   <!-- ==================== VIEW: VILLA DETAIL ==================== -->
   <div class="spa-view" id="view-villa-detail"></div>
 
+  <!-- Booking Confirmation Overlay -->
+  <div class="booking-overlay" id="bookingOverlay">
+    <div class="booking-card">
+      <div class="checkmark">🎉</div>
+      <h2>Booking Confirmed!</h2>
+      <div class="booking-id" id="bookingId">SV-BOOK-XXXXXX</div>
+      <div class="booking-details" id="bookingDetails"></div>
+      <button class="close-btn" onclick="document.getElementById('bookingOverlay').classList.remove('show')">Done</button>
+    </div>
+  </div>
+
   <!-- Footer (always visible) -->
   <footer class="footer">
-    <p>StayVista © 2025 | Script Your Stay</p>
+    <p>StayVista © 2025 | <a href="https://www.stayvista.com">stayvista.com</a> | Script Your Stay</p>
   </footer>
 
   <!-- Voice control bar (always visible, fixed) -->

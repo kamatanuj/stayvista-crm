@@ -403,10 +403,11 @@ const StayVistaClientTools = {
 
   /**
    * Create a booking request (lead capture).
-   * Stores the booking locally and shows a confirmation on screen.
+   * Stores the booking locally, shows a confirmation on screen,
+   * AND sends a demo confirmation email if an email address is provided.
    */
-  create_booking: async ({ villa_id, villa_name, guest_name, phone, check_in, check_out, guests }) => {
-    console.log('[Tool] create_booking →', { villa_id, villa_name, guest_name, phone, check_in, check_out, guests });
+  create_booking: async ({ villa_id, villa_name, guest_name, phone, email, check_in, check_out, guests }) => {
+    console.log('[Tool] create_booking →', { villa_id, villa_name, guest_name, phone, email, check_in, check_out, guests });
 
     let villa = null;
     if (villa_id) villa = VILLA_DB.find(v => v.id === villa_id);
@@ -418,6 +419,16 @@ const StayVistaClientTools = {
 
     const bookingId = 'BK-' + Date.now().toString(36).toUpperCase();
 
+    // Calculate nights
+    let nights = 1;
+    if (check_in && check_out) {
+      try {
+        const d1 = new Date(check_in);
+        const d2 = new Date(check_out);
+        nights = Math.max(1, Math.round((d2 - d1) / (1000 * 60 * 60 * 24)));
+      } catch(e) {}
+    }
+
     // Show booking confirmation on screen
     const detailView = document.getElementById('view-villa-detail');
     if (detailView) {
@@ -426,7 +437,7 @@ const StayVistaClientTools = {
           <div style="background: white; border-radius: 12px; padding: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
             <div style="font-size: 48px; margin-bottom: 16px;">🎉</div>
             <h2 style="font-size: 24px; color: #1a1a2e; margin-bottom: 8px;">Booking Request Confirmed!</h2>
-            <p style="font-size: 16px; color: #d4af37; font-weight: 600; margin-bottom: 24px;">Booking ID: ${bookingId}</p>
+            <p style="font-size: 16px; color: #c99700; font-weight: 600; margin-bottom: 24px;">Booking ID: ${bookingId}</p>
             <div style="text-align: left; background: #f8f9fa; border-radius: 8px; padding: 24px; margin-bottom: 24px; font-size: 15px; line-height: 2;">
               <strong>Villa:</strong> ${villa.name} (${villa.id})<br>
               <strong>Location:</strong> ${villa.location}<br>
@@ -434,11 +445,14 @@ const StayVistaClientTools = {
               <strong>Check-in:</strong> ${check_in || 'TBD'}<br>
               <strong>Check-out:</strong> ${check_out || 'TBD'}<br>
               <strong>Price:</strong> Rs.${villa.price.toLocaleString('en-IN')}/night<br>
+              <strong>Total (${nights} nights):</strong> Rs.${(villa.price * nights).toLocaleString('en-IN')}<br>
               <strong>Guest Name:</strong> ${guest_name || 'TBD'}<br>
-              <strong>Phone:</strong> ${phone || 'TBD'}
+              <strong>Phone:</strong> ${phone || 'TBD'}<br>
+              ${email ? `<strong>Email:</strong> ${email}<br>` : ''}
             </div>
+            ${email ? `<div id="emailStatus" style="padding:12px;background:#fef9ef;border-radius:8px;margin-bottom:16px;font-size:14px;color:#8a6500;">📧 Sending confirmation email to ${email}...</div>` : '<div style="padding:12px;background:#f0f0f0;border-radius:8px;margin-bottom:16px;font-size:14px;color:#888;">💡 Tip: Provide an email address to receive a confirmation email!</div>'}
             <p style="font-size: 14px; color: #666;">Our team will call you within 2 hours to confirm your booking and process payment.</p>
-            <button onclick="showView('view-home')" style="background: #d4af37; color: #1a1a2e; border: none; border-radius: 30px; padding: 12px 32px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 16px;">Back to Home</button>
+            <button onclick="showView('view-home')" style="background: #c99700; color: white; border: none; border-radius: 30px; padding: 12px 32px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 16px;">Back to Home</button>
           </div>
         </div>
       `;
@@ -447,13 +461,79 @@ const StayVistaClientTools = {
 
     showToast(`🎉 Booking confirmed: ${villa.name} — ${bookingId}`);
 
+    // Send demo confirmation email if email address is provided
+    let emailSent = false;
+    let emailMsg = '';
+    if (email && email.includes('@')) {
+      try {
+        // Same-origin POST (combined server handles /api/* alongside static files)
+        const emailResponse = await fetch('/api/send-confirmation-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email,
+            booking_id: bookingId,
+            villa_name: villa.name,
+            villa_id: villa.id,
+            guest_name: guest_name || 'Guest',
+            phone: phone || 'N/A',
+            check_in: check_in || 'TBD',
+            check_out: check_out || 'TBD',
+            guests: guests || villa.guests,
+            price_per_night: villa.price,
+            nights: nights,
+            location: villa.location
+          })
+        });
+        const emailResult = await emailResponse.json();
+        if (emailResult.success) {
+          emailSent = true;
+          emailMsg = `A demo confirmation email has been sent to ${email}.`;
+          // Update email status on page
+          const emailStatusEl = document.getElementById('emailStatus');
+          if (emailStatusEl) {
+            emailStatusEl.innerHTML = `✅ Demo confirmation email sent to ${email}`;
+            emailStatusEl.style.background = '#e8f5e9';
+            emailStatusEl.style.color = '#2e7d32';
+          }
+          showToast(`📧 Email sent to ${email}`);
+        } else {
+          emailMsg = `Email sending failed: ${emailResult.error || 'unknown error'}.`;
+          const emailStatusEl = document.getElementById('emailStatus');
+          if (emailStatusEl) {
+            emailStatusEl.innerHTML = `❌ Email failed: ${emailResult.error || 'error'}`;
+            emailStatusEl.style.background = '#fce4ec';
+            emailStatusEl.style.color = '#c62828';
+          }
+        }
+      } catch (err) {
+        console.error('[Tool] Email send failed:', err);
+        emailMsg = `Email sending failed (server unavailable).`;
+        const emailStatusEl = document.getElementById('emailStatus');
+        if (emailStatusEl) {
+          emailStatusEl.innerHTML = `❌ Email server unavailable`;
+          emailStatusEl.style.background = '#fce4ec';
+          emailStatusEl.style.color = '#c62828';
+        }
+      }
+    }
+
+    let returnMsg = `Booking request created successfully. Booking ID: ${bookingId}. ` +
+                    `Our team will call ${guest_name || 'the guest'} at ${phone || 'the provided number'} within 2 hours to confirm. ` +
+                    `Total: Rs.${(villa.price * nights).toLocaleString('en-IN')} for ${nights} night(s).`;
+    if (emailSent) {
+      returnMsg += ` ${emailMsg}`;
+    } else if (email) {
+      returnMsg += ` (Email sending failed — but booking is still confirmed.)`;
+    }
+
     return {
       success: true,
       booking_id: bookingId,
       villa_id: villa.id,
       villa_name: villa.name,
-      message: `Booking request created successfully. Booking ID: ${bookingId}. ` +
-               `Our team will call ${guest_name || 'the guest'} at ${phone || 'the provided number'} within 2 hours to confirm.`
+      email_sent: emailSent,
+      message: returnMsg
     };
   }
 };
