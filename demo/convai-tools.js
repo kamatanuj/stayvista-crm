@@ -368,9 +368,9 @@ const StayVistaClientTools = {
     }
 
     // Availability map (inline, demo purposes)
-    // SV-GOA-004 (The Beach House) — always unavailable
-    const UNAVAILABLE_VILLAS = ['SV-GOA-004']; // The Beach House — fully booked
-    // SV-GOA-001 (Villa Serenity) — always available (even if others might be seasonal)
+    // All villas are available by default for the demo.
+    // To mark a villa as unavailable, add its ID to the array below.
+    const UNAVAILABLE_VILLAS = []; // No villas are fully booked — all available for demo
 
     const isUnavailable = UNAVAILABLE_VILLAS.includes(villa.id);
     const available = !isUnavailable;
