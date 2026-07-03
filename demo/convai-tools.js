@@ -370,7 +370,7 @@ const StayVistaClientTools = {
     // Availability map (inline, demo purposes)
     // All villas are available by default for the demo.
     // To mark a villa as unavailable, add its ID to the array below.
-    const UNAVAILABLE_VILLAS = []; // No villas are fully booked — all available for demo
+    const UNAVAILABLE_VILLAS = ['SV-GOA-003']; // Casa de Sol is fully booked for demo
 
     const isUnavailable = UNAVAILABLE_VILLAS.includes(villa.id);
     const available = !isUnavailable;
